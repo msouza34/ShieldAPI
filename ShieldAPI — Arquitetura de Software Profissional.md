@@ -1,6 +1,4 @@
-# ShieldAPI — Arquitetura de Software Profissional
-
-**Versão:** 3.0   
+# ShieldAPI — Arquitetura de Software  
 **Data:** Março de 2026  
 **Status:** Especificação Arquitetural  
 **Objetivo:** Documentação técnica completa seguindo SOLID, Clean Architecture e Design Patterns

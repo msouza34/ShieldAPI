@@ -3,4 +3,23 @@
 /.vscode/
 *.iml
 *.log
+
+# Environment and secrets
 .env
+.env.*
+!.env.example
+!.env.production.example
+
+# Local docker override
+docker-compose.override.yml
+
+# Keys/certificates
+*.pem
+*.key
+*.p12
+*.jks
+id_rsa
+id_ed25519
+
+# Temporary test artifacts
+*_response.json

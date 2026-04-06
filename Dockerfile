@@ -12,7 +12,11 @@ RUN mvn -q -DskipTests clean package
 FROM eclipse-temurin:17-jre
 WORKDIR /app
 
+RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser
+
 COPY --from=build /app/target/shieldapi-1.0.0.jar app.jar
+RUN chown appuser:appgroup /app/app.jar
 EXPOSE 8080
 
+USER appuser
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]

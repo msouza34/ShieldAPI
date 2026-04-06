@@ -3,15 +3,15 @@ services:
     image: postgres:16-alpine
     container_name: shieldapi-postgres
     environment:
-      POSTGRES_DB: shieldapi
-      POSTGRES_USER: shield
-      POSTGRES_PASSWORD: shield
-    ports:
-      - "5432:5432"
+      POSTGRES_DB: ${POSTGRES_DB:-shieldapi}
+      POSTGRES_USER: ${POSTGRES_USER:-shield}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-shield}
+    expose:
+      - "5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U shield -d shieldapi"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-shield} -d ${POSTGRES_DB:-shieldapi}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -19,8 +19,8 @@ services:
   redis:
     image: redis:7-alpine
     container_name: shieldapi-redis
-    ports:
-      - "6379:6379"
+    expose:
+      - "6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -33,19 +33,21 @@ services:
       dockerfile: Dockerfile
     container_name: shieldapi-app
     ports:
-      - "8080:8080"
+      - "127.0.0.1:${APP_PORT:-8080}:8080"
+    security_opt:
+      - no-new-privileges:true
     environment:
-      DB_URL: jdbc:postgresql://postgres:5432/shieldapi
-      DB_USERNAME: shield
-      DB_PASSWORD: shield
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      JWT_SECRET: super-secure-shieldapi-jwt-secret-with-at-least-32-characters
-      JWT_EXPIRATION_MS: 3600000
-      RATE_LIMIT: 5
-      RATE_LIMIT_WINDOW_SECONDS: 60
-      RATE_LIMIT_BAN_THRESHOLD: 3
-      RATE_LIMIT_BAN_SECONDS: 300
+      DB_URL: ${DB_URL:-jdbc:postgresql://postgres:5432/shieldapi}
+      DB_USERNAME: ${DB_USERNAME:-shield}
+      DB_PASSWORD: ${DB_PASSWORD:-shield}
+      REDIS_HOST: ${REDIS_HOST:-redis}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      JWT_SECRET: ${JWT_SECRET:-replace-this-with-a-very-long-secret-key-with-at-least-32-chars}
+      JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS:-3600000}
+      RATE_LIMIT: ${RATE_LIMIT:-5}
+      RATE_LIMIT_WINDOW_SECONDS: ${RATE_LIMIT_WINDOW_SECONDS:-60}
+      RATE_LIMIT_BAN_THRESHOLD: ${RATE_LIMIT_BAN_THRESHOLD:-3}
+      RATE_LIMIT_BAN_SECONDS: ${RATE_LIMIT_BAN_SECONDS:-300}
     depends_on:
       postgres:
         condition: service_healthy

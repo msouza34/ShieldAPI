@@ -1131,7 +1131,7 @@ shieldapi_active_bans 3
 
 ---
 
-**Documento preparado por:** Manus AI  
+ 
 **Última atualização:** Março de 2026  
 **Versão:** 3.0  
 **Status:** Especificação Arquitetural Completa
